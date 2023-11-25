@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <title>Query Wrapper</title>
+</head>
+<body>
+    <form id="queryForm">
+        <label for="query">Enter Query:</label>
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+        document.getElementById('queryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const query = document.getElementById('query').value;
+            console.log(JSON.stringify({query}));
+            // Make a request to the backend
+            fetch('query/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    // 'X-CSRFToken': getCSRFToken(),
+                },
+                body: JSON.stringify({ query }),
+                
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display results
+                document.getElementById('results').innerText = JSON.stringify(data["result"]["answer"]);
+                console.log(data)
+                // const formattedResults = formatResults(data.result);
+                // document.getElementById('results').innerHTML = formattedResults;
+                // let responseObject = JSON.stringify(data["result"][0]["generated_text"]);
+                // responseObject = responseObject.replace(/\n/g,"'<br>'");
+                // const userQuestion = responseObject.split("User's Question:")[1].split('\n')[0].trim();
+                // // console.log("\nUser's Question:");
+                // // console.log((userQuestion));
+                // toString(userQuestion);
+
+                
+                // // var outputString = userQuestion;
+                // // console.log((outputString));
+                // document.getElementById('results').innerHTML = userQuestion;
+                // document.getElementById('results').innerText = data["result"][0]["generated_text"]
+                // console.log(data)
+                // console.log(data["result"])
+                // console.log(data["result"][0])
+                // console.log(data["result"][0]["generated_text"])
+                
+            });
+
+            // Function to format the results
+            function formatResults(results) {
+                let formattedResults = '<ul>';
+                results.forEach(result => {
+                    formattedResults += '<li>';
+                    // result.forEach(item => {
+                    //     formattedResults += `<strong>${item[0]}:</strong> ${item[1]}<br>`;
+                    // });
+                    // formattedResults += '</li>';
+                    const payload = result.find(item => item[0] === 'payload');
+                    if (payload) {
+                        // Extract information from the payload
+                        const fields = payload[1].fields;
+                        formattedResults += `<strong>Product:</strong> ${fields.product}<br>`;
+                        formattedResults += `<strong>Category:</strong> ${fields.category}<br>`;
+                        formattedResults += `<strong>Sub Category:</strong> ${fields.sub_category}<br>`;
+                        formattedResults += `<strong>Brand:</strong> ${fields.brand}<br>`;
+                        formattedResults += `<strong>Sale Price:</strong> ${fields.sale_price}<br>`;
+                        formattedResults += `<strong>Market Price:</strong> ${fields.market_price}<br>`;
+                        formattedResults += `<strong>Type:</strong> ${fields.type}<br>`;
+                        formattedResults += `<strong>Rating:</strong> ${fields.rating}<br>`;
+                        formattedResults += `<strong>Description:</strong> ${fields.description}<br>`;
+                    }
+                    formattedResults += '</li>';
+                });
+                formattedResults += '</ul>';
+                return formattedResults;
+            }
+            
+        });
+        
+    </script>
+</body>
+</html>
