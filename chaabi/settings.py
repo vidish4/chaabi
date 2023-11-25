@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'import_export',
     'rest_framework',
     'chaabi',
     "django.contrib.admin",
