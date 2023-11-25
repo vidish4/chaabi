@@ -1,0 +1,6 @@
+django
+django-rest-framework
+django_rest_framework
+transformers
+sentence_transformers
+qdrant_client
