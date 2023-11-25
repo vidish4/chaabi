@@ -4,4 +4,5 @@ django_rest_framework
 transformers
 sentence_transformers
 qdrant_client
+pandas
 import_export
